@@ -4,6 +4,14 @@ mod reg;
 use inst::*;
 use reg::*;
 use regex::Regex;
+use std::ffi::c_char;
+use std::ffi::CStr;
+
+#[no_mangle]
+pub extern fn decode_asm_line_ffi(asm_line: *const c_char) -> u32 {
+    let c_str = unsafe { CStr::from_ptr(asm_line) };
+    decode_asm_line(c_str.to_str().unwrap()).unwrap()
+}
 
 pub fn decode_asm_line(asm_line: &str) -> Result<u32, &str> {
     // Grab lines and ensure it only contains one line
