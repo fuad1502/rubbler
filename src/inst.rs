@@ -24,12 +24,67 @@ pub struct Instruction<'a> {
     pub arguments: [AsmArgs; 3],
 }
 
-// TODO: Add the rest of the supported instructions 
-pub const INSTRUCTIONS: [Instruction; 13] = [
+pub const INSTRUCTIONS: [Instruction; 35] = [
     Instruction {
         inst_type: InstructionType::I,
         asm_string: "addi",
         opcode_func: MATCH_ADDI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "andi",
+        opcode_func: MATCH_ANDI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "ori",
+        opcode_func: MATCH_ORI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "xori",
+        opcode_func: MATCH_XORI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "slti",
+        opcode_func: MATCH_SLTI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "sltiu",
+        opcode_func: MATCH_SLTIU,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "slli",
+        opcode_func: MATCH_SLLI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "srli",
+        opcode_func: MATCH_SRLI,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "srai",
+        opcode_func: MATCH_SRAI,
         num_of_arguments: 3,
         arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::Imm],
     },
@@ -55,6 +110,69 @@ pub const INSTRUCTIONS: [Instruction; 13] = [
         arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
     },
     Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "and",
+        opcode_func: MATCH_AND,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "or",
+        opcode_func: MATCH_OR,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "xor",
+        opcode_func: MATCH_XOR,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "slt",
+        opcode_func: MATCH_SLT,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "sltu",
+        opcode_func: MATCH_SLTU,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "sll",
+        opcode_func: MATCH_SLL,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "srl",
+        opcode_func: MATCH_SRL,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "sra",
+        opcode_func: MATCH_SRA,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
+        inst_type: InstructionType::R,
+        asm_string: "sub",
+        opcode_func: MATCH_SUB,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegDest, AsmArgs::RegSrc1, AsmArgs::RegSrc2],
+    },
+    Instruction {
         inst_type: InstructionType::J,
         asm_string: "jal",
         opcode_func: MATCH_JAL,
@@ -72,6 +190,41 @@ pub const INSTRUCTIONS: [Instruction; 13] = [
         inst_type: InstructionType::B,
         asm_string: "beq",
         opcode_func: MATCH_BEQ,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegSrc1, AsmArgs::RegSrc2, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::B,
+        asm_string: "bne",
+        opcode_func: MATCH_BNE,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegSrc1, AsmArgs::RegSrc2, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::B,
+        asm_string: "blt",
+        opcode_func: MATCH_BLT,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegSrc1, AsmArgs::RegSrc2, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::B,
+        asm_string: "bltu",
+        opcode_func: MATCH_BLTU,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegSrc1, AsmArgs::RegSrc2, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::B,
+        asm_string: "bge",
+        opcode_func: MATCH_BGE,
+        num_of_arguments: 3,
+        arguments: [AsmArgs::RegSrc1, AsmArgs::RegSrc2, AsmArgs::Imm],
+    },
+    Instruction {
+        inst_type: InstructionType::B,
+        asm_string: "bgeu",
+        opcode_func: MATCH_BGEU,
         num_of_arguments: 3,
         arguments: [AsmArgs::RegSrc1, AsmArgs::RegSrc2, AsmArgs::Imm],
     },
@@ -246,9 +399,9 @@ const MATCH_ADDI: u32 = 0x13;
 // const MASK_AMOXOR_H: u32 = 0xf800707f;
 // const MATCH_AMOXOR_W: u32 = 0x2000202f;
 // const MASK_AMOXOR_W: u32 = 0xf800707f;
-// const MATCH_AND: u32 = 0x7033;
+const MATCH_AND: u32 = 0x7033;
 // const MASK_AND: u32 = 0xfe00707f;
-// const MATCH_ANDI: u32 = 0x7013;
+const MATCH_ANDI: u32 = 0x7013;
 // const MASK_ANDI: u32 = 0x707f;
 // const MATCH_ANDN: u32 = 0x40007033;
 // const MASK_ANDN: u32 = 0xfe00707f;
@@ -278,17 +431,17 @@ const MATCH_BEQ: u32 = 0x63;
 // const MASK_BFP: u32 = 0xfe00707f;
 // const MATCH_BFPW: u32 = 0x4800703b;
 // const MASK_BFPW: u32 = 0xfe00707f;
-// const MATCH_BGE: u32 = 0x5063;
+const MATCH_BGE: u32 = 0x5063;
 // const MASK_BGE: u32 = 0x707f;
-// const MATCH_BGEU: u32 = 0x7063;
+const MATCH_BGEU: u32 = 0x7063;
 // const MASK_BGEU: u32 = 0x707f;
 // const MATCH_BINV: u32 = 0x68001033;
 // const MASK_BINV: u32 = 0xfe00707f;
 // const MATCH_BINVI: u32 = 0x68001013;
 // const MASK_BINVI: u32 = 0xfc00707f;
-// const MATCH_BLT: u32 = 0x4063;
+const MATCH_BLT: u32 = 0x4063;
 // const MASK_BLT: u32 = 0x707f;
-// const MATCH_BLTU: u32 = 0x6063;
+const MATCH_BLTU: u32 = 0x6063;
 // const MASK_BLTU: u32 = 0x707f;
 // const MATCH_BMATFLIP: u32 = 0x60301013;
 // const MASK_BMATFLIP: u32 = 0xfff0707f;
@@ -296,7 +449,7 @@ const MATCH_BEQ: u32 = 0x63;
 // const MASK_BMATOR: u32 = 0xfe00707f;
 // const MATCH_BMATXOR: u32 = 0x48003033;
 // const MASK_BMATXOR: u32 = 0xfe00707f;
-// const MATCH_BNE: u32 = 0x1063;
+const MATCH_BNE: u32 = 0x1063;
 // const MASK_BNE: u32 = 0x707f;
 // const MATCH_BREV8: u32 = 0x68705013;
 // const MASK_BREV8: u32 = 0xfff0707f;
@@ -1356,11 +1509,11 @@ const MATCH_LW: u32 = 0x2003;
 // const MASK_NTL_PALL: u32 = 0xffffffff;
 // const MATCH_NTL_S1: u32 = 0x400033;
 // const MASK_NTL_S1: u32 = 0xffffffff;
-// const MATCH_OR: u32 = 0x6033;
+const MATCH_OR: u32 = 0x6033;
 // const MASK_OR: u32 = 0xfe00707f;
 // const MATCH_ORC_B: u32 = 0x28705013;
 // const MASK_ORC_B: u32 = 0xfff0707f;
-// const MATCH_ORI: u32 = 0x6013;
+const MATCH_ORI: u32 = 0x6013;
 // const MASK_ORI: u32 = 0x707f;
 // const MATCH_ORN: u32 = 0x40006033;
 // const MASK_ORN: u32 = 0xfe00707f;
@@ -1566,7 +1719,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SHFLW: u32 = 0xfe00707f;
 // const MATCH_SINVAL_VMA: u32 = 0x16000073;
 // const MASK_SINVAL_VMA: u32 = 0xfe007fff;
-// const MATCH_SLL: u32 = 0x1033;
+const MATCH_SLL: u32 = 0x1033;
 // const MASK_SLL: u32 = 0xfe00707f;
 // const MATCH_SLL16: u32 = 0x54000077;
 // const MASK_SLL16: u32 = 0xfe00707f;
@@ -1576,7 +1729,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SLL8: u32 = 0xfe00707f;
 // const MATCH_SLLD: u32 = 0x107b;
 // const MASK_SLLD: u32 = 0xfe00707f;
-// const MATCH_SLLI: u32 = 0x1013;
+const MATCH_SLLI: u32 = 0x1013;
 // const MASK_SLLI: u32 = 0xfc00707f;
 // const MATCH_SLLI16: u32 = 0x74000077;
 // const MASK_SLLI16: u32 = 0xff00707f;
@@ -1604,13 +1757,13 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SLOIW: u32 = 0xfe00707f;
 // const MATCH_SLOW: u32 = 0x2000103b;
 // const MASK_SLOW: u32 = 0xfe00707f;
-// const MATCH_SLT: u32 = 0x2033;
+const MATCH_SLT: u32 = 0x2033;
 // const MASK_SLT: u32 = 0xfe00707f;
-// const MATCH_SLTI: u32 = 0x2013;
+const MATCH_SLTI: u32 = 0x2013;
 // const MASK_SLTI: u32 = 0x707f;
-// const MATCH_SLTIU: u32 = 0x3013;
+const MATCH_SLTIU: u32 = 0x3013;
 // const MASK_SLTIU: u32 = 0x707f;
-// const MATCH_SLTU: u32 = 0x3033;
+const MATCH_SLTU: u32 = 0x3033;
 // const MASK_SLTU: u32 = 0xfe00707f;
 // const MATCH_SM3P0: u32 = 0x10801013;
 // const MASK_SM3P0: u32 = 0xfff0707f;
@@ -1706,7 +1859,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SMXDS32: u32 = 0xfe00707f;
 // const MATCH_SQ: u32 = 0x4023;
 // const MASK_SQ: u32 = 0x707f;
-// const MATCH_SRA: u32 = 0x40005033;
+const MATCH_SRA: u32 = 0x40005033;
 // const MASK_SRA: u32 = 0xfe00707f;
 // const MATCH_SRA16: u32 = 0x50000077;
 // const MASK_SRA16: u32 = 0xfe00707f;
@@ -1724,7 +1877,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SRA_U: u32 = 0xfe00707f;
 // const MATCH_SRAD: u32 = 0x4000507b;
 // const MASK_SRAD: u32 = 0xfe00707f;
-// const MATCH_SRAI: u32 = 0x40005013;
+const MATCH_SRAI: u32 = 0x40005013;
 // const MASK_SRAI: u32 = 0xfc00707f;
 // const MATCH_SRAI16: u32 = 0x70000077;
 // const MASK_SRAI16: u32 = 0xff00707f;
@@ -1754,7 +1907,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SRAW: u32 = 0xfe00707f;
 // const MATCH_SRET: u32 = 0x10200073;
 // const MASK_SRET: u32 = 0xffffffff;
-// const MATCH_SRL: u32 = 0x5033;
+const MATCH_SRL: u32 = 0x5033;
 // const MASK_SRL: u32 = 0xfe00707f;
 // const MATCH_SRL16: u32 = 0x52000077;
 // const MASK_SRL16: u32 = 0xfe00707f;
@@ -1770,7 +1923,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_SRL8_U: u32 = 0xfe00707f;
 // const MATCH_SRLD: u32 = 0x507b;
 // const MASK_SRLD: u32 = 0xfe00707f;
-// const MATCH_SRLI: u32 = 0x5013;
+const MATCH_SRLI: u32 = 0x5013;
 // const MASK_SRLI: u32 = 0xfc00707f;
 // const MATCH_SRLI16: u32 = 0x72000077;
 // const MASK_SRLI16: u32 = 0xff00707f;
@@ -1810,7 +1963,7 @@ const MATCH_SH: u32 = 0x1023;
 // const MASK_STSA16: u32 = 0xfe00707f;
 // const MATCH_STSA32: u32 = 0xf2002077;
 // const MASK_STSA32: u32 = 0xfe00707f;
-// const MATCH_SUB: u32 = 0x40000033;
+const MATCH_SUB: u32 = 0x40000033;
 // const MASK_SUB: u32 = 0xfe00707f;
 // const MATCH_SUB16: u32 = 0x42000077;
 // const MASK_SUB16: u32 = 0xfe00707f;
@@ -2912,9 +3065,9 @@ const MATCH_SW: u32 = 0x2023;
 // const MASK_WRS_STO: u32 = 0xffffffff;
 // const MATCH_XNOR: u32 = 0x40004033;
 // const MASK_XNOR: u32 = 0xfe00707f;
-// const MATCH_XOR: u32 = 0x4033;
+const MATCH_XOR: u32 = 0x4033;
 // const MASK_XOR: u32 = 0xfe00707f;
-// const MATCH_XORI: u32 = 0x4013;
+const MATCH_XORI: u32 = 0x4013;
 // const MASK_XORI: u32 = 0x707f;
 // const MATCH_XPERM16: u32 = 0x28006033;
 // const MASK_XPERM16: u32 = 0xfe00707f;
