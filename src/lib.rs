@@ -69,7 +69,6 @@ fn set_mem(
     let Some(captures) = re.captures(mem_string) else {
         return Err("Parse failed");
     };
-    println!("reg = {}, imm = {}", &captures["reg"], &captures["imm"]);
     set_reg(inst_bits, &captures["reg"], RegFunc::Src1)?;
     set_imm(inst_bits, &captures["imm"], inst_type)?;
     Ok(())
