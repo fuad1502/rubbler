@@ -80,39 +80,36 @@ fn set_imm(
     imm_string: &str,
     inst_type: &InstructionType,
 ) -> Result<(), &'static str> {
-    if let Ok(imm) = imm_string.parse::<i32>() {
-        let imm = imm as u32;
-        match inst_type {
-            InstructionType::I => *inst_bits |= (imm & 0xFFF) << 20,
-            InstructionType::S => {
-                let imm_11_5 = (imm >> 5) & 0x7F;
-                let imm_4_0 = imm & 0x1F;
-                *inst_bits |= (imm_11_5 << 25) + (imm_4_0 << 7);
-            }
-            InstructionType::B => {
-                let imm_12 = (imm >> 12) & 0x1;
-                let imm_10_5 = (imm >> 5) & 0x3F;
-                let imm_4_1 = (imm >> 1) & 0xF;
-                let imm_11 = (imm >> 11) & 0x1;
-                *inst_bits |= (imm_12 << 31) + (imm_10_5 << 25) + (imm_4_1 << 8) + (imm_11 << 7);
-            }
-            InstructionType::U => {
-                let imm_31_12 = (imm >> 12) & 0xFFFFF;
-                *inst_bits |= imm_31_12 << 12;
-            }
-            InstructionType::J => {
-                let imm_20 = (imm >> 20) & 0x1;
-                let imm_10_1 = (imm >> 1) & 0x3FF;
-                let imm_11 = (imm >> 11) & 0x1;
-                let imm_19_12 = (imm >> 12) & 0xFF;
-                *inst_bits |=
-                    (imm_20 << 31) + (imm_10_1 << 21) + (imm_11 << 20) + (imm_19_12 << 12);
-            }
-            InstructionType::R => panic!("R-type instruction should've not entered here"),
+    let imm = imm_string_to_i32(imm_string)?;
+    let imm = imm as u32;
+    match inst_type {
+        InstructionType::I => *inst_bits |= (imm & 0xFFF) << 20,
+        InstructionType::S => {
+            let imm_11_5 = (imm >> 5) & 0x7F;
+            let imm_4_0 = imm & 0x1F;
+            *inst_bits |= (imm_11_5 << 25) + (imm_4_0 << 7);
         }
-        return Ok(());
+        InstructionType::B => {
+            let imm_12 = (imm >> 12) & 0x1;
+            let imm_10_5 = (imm >> 5) & 0x3F;
+            let imm_4_1 = (imm >> 1) & 0xF;
+            let imm_11 = (imm >> 11) & 0x1;
+            *inst_bits |= (imm_12 << 31) + (imm_10_5 << 25) + (imm_4_1 << 8) + (imm_11 << 7);
+        }
+        InstructionType::U => {
+            let imm_31_12 = (imm >> 12) & 0xFFFFF;
+            *inst_bits |= imm_31_12 << 12;
+        }
+        InstructionType::J => {
+            let imm_20 = (imm >> 20) & 0x1;
+            let imm_10_1 = (imm >> 1) & 0x3FF;
+            let imm_11 = (imm >> 11) & 0x1;
+            let imm_19_12 = (imm >> 12) & 0xFF;
+            *inst_bits |= (imm_20 << 31) + (imm_10_1 << 21) + (imm_11 << 20) + (imm_19_12 << 12);
+        }
+        InstructionType::R => panic!("R-type instruction should've not entered here"),
     }
-    Err("Failed parsing immediate value")
+    return Ok(());
 }
 
 fn set_reg(
@@ -140,6 +137,87 @@ fn set_reg(
     Ok(())
 }
 
+fn imm_string_to_i32(imm_string: &str) -> Result<i32, &'static str> {
+    let mut imm_chars = imm_string.chars().peekable();
+    let mut sign = 1;
+    // Skip + or - sign
+    if let Some(&c) = imm_chars.peek() {
+        if c == '+' || c == '-' {
+            if c == '-' {
+                sign = -1;
+            }
+            imm_chars.next();
+        }
+    } else {
+        return Err("Found empty string");
+    }
+    // Check radix
+    // TODO: support specifying radix at the end
+    // TODO: allow underscores in binary literal
+    // See https://www.nasm.us/doc/nasmdoc3.html#section-3.4.1
+    let mut radix = 10;
+    if let Some(&c) = imm_chars.peek() {
+        if c == '0' {
+            imm_chars.next();
+            if let Some(c) = imm_chars.peek() {
+                match c {
+                    'x' | 'h' => {
+                        radix = 16;
+                        imm_chars.next();
+                    }
+                    'b' | 'y' => {
+                        radix = 2;
+                        imm_chars.next();
+                    }
+                    'o' | 'q' => {
+                        radix = 8;
+                        imm_chars.next();
+                    }
+                    'd' => {
+                        radix = 10;
+                        imm_chars.next();
+                    }
+                    _ => radix = 10,
+                }
+            }
+        } else if c == '$' {
+            radix = 16;
+            imm_chars.next();
+        }
+    } else {
+        return Err("Found empty literal");
+    }
+    // Decode string
+    let imm_string: String = imm_chars.collect();
+    match i32::from_str_radix(&imm_string, radix) {
+        Ok(x) => Ok(sign * x),
+        Err(_) => Err("String decode failed"),
+    }
+}
+
+#[test]
+fn test_imm_string_to_i32() {
+    let imm_string = "200";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 200);
+    let imm_string = "0200";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 200);
+    let imm_string = "0d200";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 200);
+    let imm_string = "$0c8";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0xc8);
+    let imm_string = "0xc8";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0xc8);
+    let imm_string = "0hc8";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0xc8);
+    let imm_string = "0o310";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0o310);
+    let imm_string = "0q310";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0o310);
+    let imm_string = "0b11001000";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0b11001000);
+    let imm_string = "0y11001000";
+    assert_eq!(imm_string_to_i32(imm_string).unwrap(), 0b11001000);
+}
 #[test]
 fn test_op_imm() {
     let asm_line = "addi t2 t1 -3";
