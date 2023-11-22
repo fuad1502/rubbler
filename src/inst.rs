@@ -24,7 +24,7 @@ pub struct Instruction<'a> {
     pub arguments: [AsmArgs; 3],
 }
 
-pub const INSTRUCTIONS: [Instruction; 35] = [
+pub const INSTRUCTIONS: [Instruction; 37] = [
     Instruction {
         inst_type: InstructionType::I,
         asm_string: "addi",
@@ -244,8 +244,22 @@ pub const INSTRUCTIONS: [Instruction; 35] = [
     },
     Instruction {
         inst_type: InstructionType::I,
+        asm_string: "lhu",
+        opcode_func: MATCH_LHU,
+        num_of_arguments: 2,
+        arguments: [AsmArgs::RegDest, AsmArgs::Mem, AsmArgs::NoArg],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
         asm_string: "lb",
         opcode_func: MATCH_LB,
+        num_of_arguments: 2,
+        arguments: [AsmArgs::RegDest, AsmArgs::Mem, AsmArgs::NoArg],
+    },
+    Instruction {
+        inst_type: InstructionType::I,
+        asm_string: "lbu",
+        opcode_func: MATCH_LBU,
         num_of_arguments: 2,
         arguments: [AsmArgs::RegDest, AsmArgs::Mem, AsmArgs::NoArg],
     },
@@ -1359,7 +1373,7 @@ const MATCH_LB: u32 = 0x3;
 // const MASK_LB: u32 = 0x707f;
 // const MATCH_LB_AQ: u32 = 0x3400002f;
 // const MASK_LB_AQ: u32 = 0xfdf0707f;
-// const MATCH_LBU: u32 = 0x4003;
+const MATCH_LBU: u32 = 0x4003;
 // const MASK_LBU: u32 = 0x707f;
 // const MATCH_LD: u32 = 0x3003;
 // const MASK_LD: u32 = 0x707f;
@@ -1371,7 +1385,7 @@ const MATCH_LH: u32 = 0x1003;
 // const MASK_LH: u32 = 0x707f;
 // const MATCH_LH_AQ: u32 = 0x3400102f;
 // const MASK_LH_AQ: u32 = 0xfdf0707f;
-// const MATCH_LHU: u32 = 0x5003;
+const MATCH_LHU: u32 = 0x5003;
 // const MASK_LHU: u32 = 0x707f;
 // const MATCH_LQ: u32 = 0x300f;
 // const MASK_LQ: u32 = 0x707f;
