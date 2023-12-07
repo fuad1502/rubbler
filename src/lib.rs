@@ -1,5 +1,6 @@
 mod inst;
 mod reg;
+mod scanner;
 
 use inst::*;
 use reg::*;
@@ -8,7 +9,7 @@ use std::ffi::c_char;
 use std::ffi::CStr;
 
 #[no_mangle]
-pub extern fn decode_asm_line_ffi(asm_line: *const c_char) -> u32 {
+pub extern "C" fn decode_asm_line_ffi(asm_line: *const c_char) -> u32 {
     let c_str = unsafe { CStr::from_ptr(asm_line) };
     decode_asm_line(c_str.to_str().unwrap()).unwrap()
 }
@@ -178,6 +179,8 @@ fn imm_string_to_i32(imm_string: &str) -> Result<i32, &'static str> {
                     }
                     _ => radix = 10,
                 }
+            } else {
+                return Ok(0);
             }
         } else if c == '$' {
             radix = 16;
